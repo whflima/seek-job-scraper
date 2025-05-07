@@ -1,7 +1,12 @@
-import time
+import json
+import re
+from typing import Counter
+from collections import defaultdict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from utils.models import Advertiser, Job, JobCard, TechStack
+from utils.types import tech_stack_patterns
 
 def get_element(driver, locator, selector, retries=3):
     for attempt in range(retries):
@@ -33,6 +38,8 @@ def click_element(driver, element):
     except:
         print("Click intercepted, using JavaScript to click the element.")
         driver.execute_script("arguments[0].click();", element)
+    
+    # time.sleep(1)
 
 def click_element_by_id(driver, element_id):
     element = get_element(driver, By.ID, element_id)
@@ -42,11 +49,12 @@ def get_job_link(driver, job_id):
     selector = f'job-title-{job_id}'
     return get_element(driver, By.ID, selector)
 
-def get_job_ad_details_element(driver, job_id):
-    job_link_element = get_job_link(driver, job_id)
-    click_element(driver, job_link_element)
-
+def get_job_ad_details_element(driver):
     selector = '[data-automation="jobAdDetails"]'
+    return get_element(driver, By.CSS_SELECTOR, selector)
+
+def get_advertiser_name_element(driver):
+    selector = '[data-automation="advertiser-name"]'
     return get_element(driver, By.CSS_SELECTOR, selector)
 
 def get_classification_toggle(driver, timeout=10):
@@ -109,7 +117,6 @@ def get_number_of_jobs(driver):
 def set_listing_time_radio(driver, listing_time):
     listing_time_element = get_job_listing_time_element(driver)
     click_element(driver, listing_time_element)
-    time.sleep(1)
 
     listing_time_radio_element = get_job_listing_time_radio_element(driver, listing_time)
     click_element(driver, listing_time_radio_element)
@@ -117,7 +124,6 @@ def set_listing_time_radio(driver, listing_time):
 def set_classification_checkbox(driver, classification_id):
     job_classification_element = get_job_classification_element(driver)
     click_element(driver, job_classification_element)
-    time.sleep(1)
 
     job_classification_checkbox_element = get_job_classification_checkbox_element(driver, classification_id)
     click_element(driver, job_classification_checkbox_element)
@@ -129,16 +135,25 @@ def set_sorted_by(driver, tag):
     sort_by_date = get_sorted_by_option_element(driver, tag)
     click_element(driver, sort_by_date)
 
-def get_job_info(driver, card_id, card_title, job_description):
-    job_link = get_job_link(driver, card_id) 
-    link_href = get_attribute_from_element(job_link, 'href')
+def get_job_description(driver):
+    element = get_job_ad_details_element(driver)
+    return get_text_from_element(element)
 
-    return {
-        "id": card_id,
-        "title": card_title,
-        "description": job_description,
-        "href" : link_href
-    }
+def get_job_advertiser_name(driver):
+    element = get_advertiser_name_element(driver)
+    return get_text_from_element(element)
+
+def get_job_info(driver, seek_id, title):
+    job_link_element = get_job_link(driver, seek_id)
+    description = get_job_description(driver) 
+    advertiser_name = get_job_advertiser_name(driver) 
+    link = get_attribute_from_element(job_link_element, 'href')
+    stacks = get_tech_stack(description)
+    
+    job = Job(job_id=None, advertiser_id=None, link=link, title=title)
+    advertiser = Advertiser(advertiser_id=None, name=advertiser_name)
+
+    return JobCard(job=job, advertiser=advertiser, stacks=stacks)
 
 def is_job_matches(additional_filters, job):
     found = [item for item in additional_filters if item in job]
@@ -173,6 +188,10 @@ def set_job_filters(driver, keywords, location, time="Today", classification_id=
     set_classification_checkbox(driver, classification_id)
     set_sorted_by(driver, sorted_by)
 
+def open_view_job_details_wrapper(driver, card_id):
+    element = get_job_link(driver, card_id)
+    click_element(driver, element)
+
 def get_jobs_by_page(driver, page_number):
     jobs_by_page = []
     limit_of_jobs_per_page = 23
@@ -184,12 +203,10 @@ def get_jobs_by_page(driver, page_number):
         card_id = get_attribute_from_element(card, "data-job-id")
         card_title = get_attribute_from_element(card, "aria-label")
 
-        job_details = get_job_ad_details_element(driver, card_id)
-        job_description = get_text_from_element(job_details)
+        open_view_job_details_wrapper(driver, card_id)
 
-        print(f"Page: {page_number} Job Number: {card_index} Job Title: {card_title}")
-        card_info = get_job_info(driver, card_id, card_title, job_description)
-        jobs_by_page.append(card_info)
+        job_info = get_job_info(driver, card_id, card_title)
+        jobs_by_page.append(job_info)
 
     return jobs_by_page
 
@@ -209,16 +226,15 @@ def get_all_jobs(driver, number_of_jobs):
             break
 
         click_element(driver, page)
-        time.sleep(1)
 
     return job_list
 
-def get_job_list_applying_additional_filters(driver, work_type, number_of_jobs):
+def get_job_list_applying_additional_filters(driver, additional_filters, number_of_jobs):
     jobs_filtered = []
     job_list = get_all_jobs(driver, number_of_jobs)
 
     for job in job_list:
-        if is_job_matches_with_additional_filters(work_type, job["description"], job["title"]):
+        if is_job_matches_with_additional_filters(additional_filters, job["description"], job["title"]):
             jobs_filtered.append({
                 "id": job["id"],
                 "title": job["title"],
@@ -226,3 +242,23 @@ def get_job_list_applying_additional_filters(driver, work_type, number_of_jobs):
             })
     
     return jobs_filtered
+
+def defaultdict_to_json(data):
+    try:
+        return json.dumps(data)
+    except TypeError as e:
+        print(f"Error: Could not serialize defaultdict to JSON: {e}")
+        return None
+    
+def get_tech_stack(job_description):
+    seen = set()
+    tech_stack = []
+    for category, subcategories in tech_stack_patterns.items():
+        for subcategory, pattern in subcategories.items():
+            matches = re.findall(pattern, job_description)
+            for stack in matches:
+                key = (category, subcategory, stack)
+                if key not in seen:
+                    seen.add(key)
+                    tech_stack.append(TechStack(category, subcategory, stack))
+    return tech_stack
