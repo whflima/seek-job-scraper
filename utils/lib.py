@@ -5,7 +5,7 @@ from collections import defaultdict
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from utils.models import Advertiser, Job, JobCard, TechStack
+from utils.models import Advertiser, Data, Filters, Job, JobCard, TechStack
 from utils.types import tech_stack_patterns
 
 def get_element(driver, locator, selector, retries=3):
@@ -262,3 +262,26 @@ def get_tech_stack(job_description):
                     seen.add(key)
                     tech_stack.append(TechStack(category, subcategory, stack))
     return tech_stack
+
+def get_filters_event_data(event):
+    filters_data = event.get("filters", {})
+    return Filters(
+        keywords=filters_data.get("keywords", ""),
+        location=filters_data.get("location", ""),
+        time=filters_data.get("time", ""),
+        classification=filters_data.get("classification", ""),
+        sort=filters_data.get("sort", "")
+    )
+
+def get_event_data(event):
+    return Data(
+        filters=get_filters_event_data(event),
+        save_result=event.get("save_result", False),
+        return_result=event.get("return_result", False),
+    )
+
+def get_response(status: bool, response: any):
+    return {
+        "statusCode": status, 
+        "body": response
+    } 

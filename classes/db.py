@@ -98,3 +98,6 @@ class WebScrapingDB:
     def save_all_jobs(self, jobs: list):
         for job in jobs:
             self.save_job(job)
+    
+    def close(self):
+        self.connection.close()

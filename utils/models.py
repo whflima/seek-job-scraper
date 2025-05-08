@@ -2,6 +2,20 @@ from dataclasses import dataclass
 from typing import Optional
 
 @dataclass
+class Filters:
+    keywords: str = ""
+    location: str = ""
+    time: str = ""
+    classification: str = ""
+    sort: str = ""
+
+@dataclass
+class Data:
+    filters: Optional[Filters] = None
+    save_result: bool = False
+    return_result: bool = False
+
+@dataclass
 class WebsiteProvider:
     name: str
     website_provider_id: Optional[int] = None
