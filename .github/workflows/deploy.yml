@@ -3,7 +3,7 @@ name: Deploy Lambda with Selenium to ECR
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
