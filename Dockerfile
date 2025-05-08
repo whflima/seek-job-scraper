@@ -15,5 +15,5 @@ COPY --from=build /opt/chrome-linux64 /opt/chrome
 COPY --from=build /opt/chromedriver-linux64 /opt/
 COPY main.py ./
 COPY classes/ ./
-COPY ultils/ ./
+COPY utils/ ./
 CMD [ "main.handler" ]
