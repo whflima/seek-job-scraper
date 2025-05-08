@@ -29,7 +29,7 @@ jobs:
       - name: Build and Push Docker Image to ECR
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          ECR_REPOSITORY: lambda-selenium-repo
+          ECR_REPOSITORY: lambda-seek-scraper-repo
           IMAGE_TAG: latest
           REGION: ${{ secrets.AWS_REGION }}
         run: |
@@ -42,11 +42,11 @@ jobs:
       - name: Deploy to AWS Lambda
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
-          ECR_REPOSITORY: lambda-selenium-repo
+          ECR_REPOSITORY: lambda-seek-scraper-repo
           REGION: ${{ secrets.AWS_REGION }}
         run: |
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
           aws lambda update-function-code \
-            --function-name selenium-lambda \
+            --function-name seek-scraper-lambda \
             --image-uri $IMAGE_URI \
             --region $REGION
