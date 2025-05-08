@@ -2,11 +2,11 @@ from boto3.session import Session
 import boto3
 import os
 
-KEY = os.environ.get('KEY')
-BUCKET = os.environ.get('BUCKET') 
-LOCAL_STORAGE = os.environ.get('KEY') #"/tmp/web_scraping.db"
-ACCESS_KEY = os.environ.get('ACCESS_KEY')
-SECRET_KEY = os.environ.get('SECRET_KEY')
+KEY = os.environ.get('AWS_FILE_BUCKET_KEY')
+BUCKET = os.environ.get('AWS_BUCKET_NAME') 
+LOCAL_STORAGE = "web_scraping.db" #os.environ.get('KEY') "/tmp/web_scraping.db"
+ACCESS_KEY = os.environ.get('AWS_ACCESS_KEY')
+SECRET_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 class AmazonS3Storage():
     def __init__(self, key: str = KEY, bucket: str = BUCKET):
