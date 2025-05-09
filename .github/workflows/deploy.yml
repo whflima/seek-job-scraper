@@ -41,24 +41,52 @@ jobs:
 
       - name: Clean up Docker images
         run: docker system prune -af
-            
+
       - name: Deploy to AWS Lambda
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           ECR_REPOSITORY: lambda-seek-scraper-repo
           REGION: ${{ secrets.AWS_REGION }}
         run: |
-          echo '{
-            "Variables": {
-              "AWS_FILE_BUCKET_KEY": "'"$AWS_FILE_BUCKET_KEY"'",
-              "AWS_BUCKET_NAME": "'"$AWS_BUCKET_NAME"'",
-              "REGION": "'"$AWS_REGION"'"
-            }
-          }' > env.json
-
           IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
           aws lambda update-function-code \
             --function-name seek-scraper-lambda \
             --image-uri $IMAGE_URI \
-            --region $REGION \
+            --region $REGION
+
+      - name: Set Lambda Environment Variables
+        env: 
+          AWS_FILE_BUCKET_KEY: ${{ secrets.AWS_FILE_BUCKET_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          echo "Waiting for previous Lambda update to complete..."
+
+          while true; do
+            status=$(aws lambda get-function-configuration \
+              --function-name seek-scraper-lambda \
+              --region "$REGION" \
+              --query 'LastUpdateStatus' --output text)
+
+            echo "Current status: $status"
+
+            if [ "$status" = "Successful" ]; then
+              break
+            fi
+
+            sleep 5
+          done
+
+          echo '{
+            "Variables": {
+              "AWS_FILE_BUCKET_KEY": "'"$AWS_FILE_BUCKET_KEY"'",
+              "AWS_BUCKET_NAME": "'"$AWS_BUCKET_NAME"'",
+              "REGION": "'"$REGION"'"
+            }
+          }' > env.json
+
+          aws lambda update-function-configuration \
+            --function-name seek-scraper-lambda \
+            --region "$REGION" \
+            --memory-size 1024 \
             --environment file://env.json
