@@ -16,7 +16,8 @@ def get_element(driver, locator, selector, retries=3):
             return element
         except:
             if attempt == retries - 1:
-                raise Exception(f"Failed to get element: {selector}.")
+                html_source = driver.page_source
+                raise Exception(f"Failed to get element: {selector}. HTML_SOURCE: {html_source}")
 
 def get_attribute_from_element(element, attribure):
     try:
