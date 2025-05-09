@@ -21,37 +21,40 @@ jobs:
       with:
         python-version: '3.11'
 
-    - name: Install dependencies
-      run: |
-        python -m venv venv
-        source venv/bin/activate
-        pip install --upgrade pip
-        pip install -r api-web-scraper/requirements.txt
-
-    - name: Build and package
-      run: |
-        mkdir package
-        cp -r api-web-scraper/app/* package/
-        cp api-web-scraper/app/main.py package/
-        cd package
-        zip -r ../deployment.zip .
-        cd ..
-
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-
-    - name: Deploy to Lambda
+    
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Build and Push Docker Image to ECR
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        ECR_REPOSITORY: lambda-fastapi-web-scraper-repo
+        IMAGE_TAG: latest
+        REGION: ${{ secrets.AWS_REGION }}
       run: |
-        aws cloudformation package \
-          --template-file api-web-scraper/template.yaml \
-          --s3-bucket ${{ secrets.AWS_BUCKET_NAME }} \
-          --output-template-file packaged.yaml
+        ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+        IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+        
+        docker build -t ${IMAGE_URI} .
+        docker push ${IMAGE_URI}
 
-        aws cloudformation deploy \
-          --template-file packaged.yaml \
-          --stack-name fastapi-web-scraper-lambda-stack \
-          --capabilities CAPABILITY_IAM
+    - name: Clean up Docker images
+      run: docker system prune -af
+    
+    - name: Deploy to AWS Lambda
+      env:
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        ECR_REPOSITORY: lambda-fastapi-web-scraper-repo
+        REGION: ${{ secrets.AWS_REGION }}
+      run: |
+        IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}:latest
+        aws lambda update-function-code \
+          --function-name fastapi-web-scraper-lambda \
+          --image-uri $IMAGE_URI \
+          --region $REGION
