@@ -37,6 +37,7 @@ class SeekWebScraping:
         chrome_options.add_argument("--window-size=1280x1696")
         chrome_options.add_argument("--single-process")
         chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--disable-web-security")
         chrome_options.add_argument("--disable-dev-tools")
         chrome_options.add_argument("--no-zygote")
         chrome_options.add_argument(f"--user-data-dir={mkdtemp()}")
