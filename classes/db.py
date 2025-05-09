@@ -22,7 +22,7 @@ from utils.types import Parameters
 
 class WebScrapingDB:
     
-    def __init__(self, db_path: str = "web_scraping.db"):
+    def __init__(self, db_path: str = "/tmp/web_scraping.db"):
         self.connection = sqlite3.connect(db_path)
         self.create_tables()
     
