@@ -25,19 +25,12 @@ class SeekWebScraping:
         return webdriver.Chrome(options=chrome_options, service=chrome_service)
     
     def _get_chrome_service(self):
-        path = self._get_chrome_driver_service_path()
-        service = webdriver.ChromeService(path)
+        service = webdriver.ChromeService("/opt/chromedriver")
         return service
-    
-    def _get_chrome_driver_service_path(self):
-        return  os.getcwd() + "/bin/chromedriver"
-    
-    def _get_chrome_binary_path(self):
-        return  os.getcwd() + "/bin/chrome/chrome"
     
     def _get_chrome_options(self):
         chrome_options = Options()
-        chrome_options.binary_location = self._get_chrome_binary_path()
+        chrome_options.binary_location = '/opt/chrome/chrome'
         chrome_options.add_argument("--headless=new")
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument("--disable-gpu")
