@@ -53,5 +53,5 @@ jobs:
 
         aws cloudformation deploy \
           --template-file packaged.yaml \
-          --stack-name fastapi-web-scraperlambda-stack \
+          --stack-name fastapi-web-scraper-lambda-stack \
           --capabilities CAPABILITY_IAM
