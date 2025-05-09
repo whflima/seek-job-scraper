@@ -31,6 +31,8 @@ class SeekWebScraping:
     def _get_chrome_options(self):
         chrome_options = Options()
         chrome_options.binary_location = '/opt/chrome/chrome'
+        chrome_options.add_argument("--enable-javascript")
+        chrome_options.add_argument("--accept-cookies")
         chrome_options.add_argument("--headless=new")
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument("--disable-gpu")
