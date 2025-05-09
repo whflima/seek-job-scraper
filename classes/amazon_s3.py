@@ -5,7 +5,7 @@ import os
 KEY = os.environ.get('AWS_FILE_BUCKET_KEY')
 BUCKET = os.environ.get('AWS_BUCKET_NAME') 
 REGION = os.environ.get('REGION')
-LOCAL_STORAGE = "web_scraping.db" #os.environ.get('KEY') "/tmp/web_scraping.db"
+LOCAL_STORAGE = "/tmp/web_scraping.db" #os.environ.get('KEY') "/tmp/web_scraping.db"
 
 class AmazonS3Storage():
     def __init__(self, key: str = KEY, bucket: str = BUCKET):
