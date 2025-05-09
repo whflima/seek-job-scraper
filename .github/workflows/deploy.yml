@@ -39,6 +39,9 @@ jobs:
           docker build -t ${IMAGE_URI} .
           docker push ${IMAGE_URI}
 
+      - name: Clean up Docker images
+        run: docker system prune -af
+
       - name: Deploy to AWS Lambda
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
@@ -50,3 +53,15 @@ jobs:
             --function-name seek-scraper-lambda \
             --image-uri $IMAGE_URI \
             --region $REGION
+
+      - name: Set Lambda Environment Variables
+        env: 
+          AWS_FILE_BUCKET_KEY: ${{ secrets.AWS_FILE_BUCKET_KEY }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws lambda update-function-configuration \
+            --memory-size 1024 \
+            --function-name seek-scraper-lambda \
+            --region "$AWS_REGION" \
+            --environment "Variables={\"AWS_FILE_BUCKET_KEY\":\"$AWS_FILE_BUCKET_KEY\",\"AWS_BUCKET_NAME\":\"$AWS_BUCKET_NAME\",\"AWS_REGION\":\"$AWS_REGION\"}"
