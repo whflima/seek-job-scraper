@@ -41,7 +41,7 @@ jobs:
         ECR_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
         IMAGE_URI=${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
         
-        docker build -t ${IMAGE_URI} .
+        docker build -t ${IMAGE_URI} api-web-scraper/.
         docker push ${IMAGE_URI}
 
     - name: Clean up Docker images
