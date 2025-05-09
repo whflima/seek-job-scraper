@@ -60,8 +60,16 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
         run: |
+          echo '{
+            "Variables": {
+              "AWS_FILE_BUCKET_KEY": "'"$AWS_FILE_BUCKET_KEY"'",
+              "AWS_BUCKET_NAME": "'"$AWS_BUCKET_NAME"'",
+              "AWS_REGION": "'"$AWS_REGION"'"
+            }
+          }' > env.json
+
           aws lambda update-function-configuration \
             --memory-size 1024 \
             --function-name seek-scraper-lambda \
             --region "$AWS_REGION" \
-            --environment "Variables={\"AWS_FILE_BUCKET_KEY\":\"$AWS_FILE_BUCKET_KEY\",\"AWS_BUCKET_NAME\":\"$AWS_BUCKET_NAME\",\"AWS_REGION\":\"$AWS_REGION\"}"
+            --environment file://env.json
