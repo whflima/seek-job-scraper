@@ -31,7 +31,7 @@ class SeekWebScraping:
     def _get_chrome_options(self):
         chrome_options = Options()
         chrome_options.binary_location = '/opt/chrome/chrome'
-        chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--headless")
         chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--window-size=1280x1696")
@@ -44,6 +44,7 @@ class SeekWebScraping:
         chrome_options.add_argument(f"--data-path={mkdtemp()}")
         chrome_options.add_argument(f"--disk-cache-dir={mkdtemp()}")
         chrome_options.add_argument("--remote-debugging-port=9222")
+        chrome_options.add_argument("user-agent=Mozilla/5.0 ... Chrome/113.0.0.0 Safari/537.36")
         return chrome_options
 
     def set_filters(self, keywords: str = "Software Engineer", location: str = "All Sydney NSW", time_p: str = "Today", classification_id: str = "6281", sorted_by: str = "sortby-1"):
