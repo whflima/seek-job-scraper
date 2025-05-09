@@ -43,17 +43,17 @@ def handler(event, context):
         logger.exception("Error processing Lambda event")
         return get_response(500, {"error": str(e)})
     
-# event = {
-#   "filters": {
-#     "keywords": "Software Engineer",
-#     "location": "All Sydney NSW",
-#     "time": "Today",
-#     "classification": "6281",
-#     "sort": "sortby-1"
-#   },
-#   "save_result": True,
-#   "return_result": True
-# }
+event = {
+  "filters": {
+    "keywords": "Software Engineer",
+    "location": "All Sydney NSW",
+    "time": "Today",
+    "classification": "6281",
+    "sort": "sortby-1"
+  },
+  "save_result": True,
+  "return_result": True
+}
 
-# context = {}
-# print(handler(event, context))
+context = {}
+print(handler(event, context))
