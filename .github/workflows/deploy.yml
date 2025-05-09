@@ -71,5 +71,5 @@ jobs:
           aws lambda update-function-configuration \
             --memory-size 1024 \
             --function-name seek-scraper-lambda \
-            --region "$AWS_REGION" \
+            --region $AWS_REGION \
             --environment file://env.json
