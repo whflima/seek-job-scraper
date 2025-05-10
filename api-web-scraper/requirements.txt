@@ -4,3 +4,4 @@ uvicorn
 dependency_injector
 sqlalchemy
 sqlmodel
+boto3
