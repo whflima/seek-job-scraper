@@ -5,3 +5,4 @@ dependency_injector
 sqlalchemy
 sqlmodel
 boto3
+pydantic-settings
