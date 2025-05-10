@@ -1,10 +1,11 @@
-# Dockerfile
 FROM public.ecr.aws/lambda/python:3.11
 
-COPY app/ ./
-COPY main.py/ ./
-COPY ./requirements.txt ./requirements.txt
+# Copy everything to /var/task (Lambda's working dir)
+COPY app/ /var/task/app/
+COPY requirements.txt .
 
-RUN pip install -r ./requirements.txt
+# Install dependencies into /var/task
+RUN pip install -r requirements.txt --target /var/task
 
-CMD [ "main.handler" ]
+# Set the Lambda entrypoint to your FastAPI Mangum handler
+CMD ["app.main.handler"]
