@@ -1,3 +1,6 @@
 fastapi
 mangum
 uvicorn
+dependency_injector
+sqlalchemy
+sqlmodel
