@@ -25,39 +25,29 @@
 - FastAPI
 - Docker
 - GitHub Actions for CI/CD
-<!--
-## 📦 Setup & Run Locally
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/seek-job-scraper.git
-   cd seek-job-scraper
-   ```
+## 🚀 Backend API Deployment (GitHub Actions + Amazon ECR + AWS Lambda)
 
-2. **Run with Docker (recommended)**
-   ```bash
-   docker build -t seek-job-scraper .
-   docker run -p 8000:8000 seek-job-scraper
-   ```
+This project uses **GitHub Actions** to automatically deploy the FastAPI backend to **AWS Lambda** using a Docker container image stored in **Amazon ECR**.
 
-3. **Or set up a virtual environment**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   python api-web-scraper/main.py
-   ```
+### 🔁 Deployment Workflow
 
-> Make sure you have Docker and Python 3.11 installed.
+The deployment is triggered on pushes to the `master` branch that affect:
 
+- The `api-web-scraper/` directory
+- The workflow file itself
 
-## 📚 API Endpoints
+### 📂 Workflow File: `.github/workflows/deploy-api-seek-web-scraper.yml`
 
-| Method | Endpoint            | Description              |
-|--------|---------------------|--------------------------|
-| GET    | `/adveriser`        | Returns scraped job data |
-| POST   | `/scrape`           | Triggers scraping task   |
--->
+Key steps in the workflow:
+
+1. **Checkout the code**
+2. **Set up Python 3.11**
+3. **Configure AWS credentials using GitHub Secrets**
+4. **Login to Amazon ECR**
+5. **Build and push Docker image to ECR**
+6. **Prune Docker images to free space**
+7. **Deploy image to AWS Lambda**
 
 ## Author
 
