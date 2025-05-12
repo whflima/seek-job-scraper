@@ -10,7 +10,8 @@ class  Container(containers.DeclarativeContainer):
         modules=[
             "app.api.endpoints.advertiser",
             "app.api.endpoints.provider",
-            "app.api.endpoints.job"
+            "app.api.endpoints.job",
+            "app.api.endpoints.stack"
         ]
     )
     
@@ -19,7 +20,9 @@ class  Container(containers.DeclarativeContainer):
     advertiser_repository = providers.Factory(AdvertiserRepository, session_factory=db.provided.session)
     provider_repository = providers.Factory(ProviderRepository, session_factory=db.provided.session)
     job_repository = providers.Factory(JobRepository, session_factory=db.provided.session)
+    stack_repository = providers.Factory(StackRepository, session_factory=db.provided.session)
     
     advertiser_service = providers.Factory(AdvertiserService,  advertiser_repository=advertiser_repository)
     provider_service = providers.Factory(ProviderService,  provider_repository=provider_repository)
     job_service = providers.Factory(JobService,  job_repository=job_repository)
+    stack_service = providers.Factory(StackService,  stack_repository=stack_repository)
