@@ -6,7 +6,7 @@ from app.core.container import Container
 from app.api.routes import routers
 
 container = Container()
-container.wire(modules=["app.api.endpoints.advertiser"])
+container.wire(modules=["app.api.endpoints.advertiser", "app.api.endpoints.provider"])
 
 app = FastAPI()
 

@@ -8,12 +8,15 @@ from app.service import *
 class  Container(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "app.api.endpoints.advertiser"
+            "app.api.endpoints.advertiser",
+            "app.api.endpoints.provider"
         ]
     )
     
     db = providers.Singleton(Database, db_url=configs.DATABASE_URL)
     
     advertiser_repository = providers.Factory(AdvertiserRepository, session_factory=db.provided.session)
+    provider_repository = providers.Factory(ProviderRepository, session_factory=db.provided.session)
     
     advertiser_service = providers.Factory(AdvertiserService,  advertiser_repository=advertiser_repository)
+    provider_service = providers.Factory(ProviderService,  provider_repository=provider_repository)

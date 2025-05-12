@@ -1,1 +1,2 @@
 from app.repository.advertiser_repository import AdvertiserRepository
+from app.repository.provider_repository import ProviderRepository
