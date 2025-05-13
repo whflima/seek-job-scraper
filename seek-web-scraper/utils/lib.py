@@ -16,8 +16,7 @@ def get_element(driver, locator, selector, retries=3):
             return element
         except:
             if attempt == retries - 1:
-                html_source = driver.page_source
-                raise Exception(f"Failed to get element: {selector}. HTML_SOURCE: {html_source}")
+                raise Exception(f"Failed to get element: {selector}.")
 
 def get_attribute_from_element(element, attribure):
     try:
@@ -151,7 +150,7 @@ def get_job_info(driver, seek_id, title):
     link = get_attribute_from_element(job_link_element, 'href')
     stacks = get_tech_stack(description)
     
-    job = Job(job_id=None, advertiser_id=None, link=link, title=title)
+    job = Job(job_id=None, advertiser_id=None, link=link, title=title, description=description)
     advertiser = Advertiser(advertiser_id=None, name=advertiser_name)
 
     return JobCard(job=job, advertiser=advertiser, stacks=stacks)
@@ -193,7 +192,7 @@ def open_view_job_details_wrapper(driver, card_id):
     element = get_job_link(driver, card_id)
     click_element(driver, element)
 
-def get_jobs_by_page(driver, page_number):
+def get_jobs_by_page(driver, page_number) -> list[JobCard]:
     jobs_by_page = []
     limit_of_jobs_per_page = 23
     for card_index in range(1, limit_of_jobs_per_page):
@@ -211,7 +210,7 @@ def get_jobs_by_page(driver, page_number):
 
     return jobs_by_page
 
-def get_all_jobs(driver, number_of_jobs):
+def get_all_jobs(driver, number_of_jobs) -> list[JobCard]:
     job_list = []
     page_number = 1
     while True:
@@ -230,17 +229,16 @@ def get_all_jobs(driver, number_of_jobs):
 
     return job_list
 
-def get_job_list_applying_additional_filters(driver, additional_filters, number_of_jobs):
+def get_jobs(driver, number_of_jobs, additional_filters: list[str]):
     jobs_filtered = []
     job_list = get_all_jobs(driver, number_of_jobs)
+    
+    if not additional_filters or len(additional_filters) == 0:
+        return job_list
 
     for job in job_list:
-        if is_job_matches_with_additional_filters(additional_filters, job["description"], job["title"]):
-            jobs_filtered.append({
-                "id": job["id"],
-                "title": job["title"],
-                "href" : job["href"]
-            })
+        if is_job_matches_with_additional_filters(additional_filters, job.job.description, job.job.title):
+            jobs_filtered.append(job)
     
     return jobs_filtered
 
@@ -277,6 +275,7 @@ def get_filters_event_data(event):
 def get_event_data(event):
     return Data(
         filters=get_filters_event_data(event),
+        additional_filters=event.get("additional_filters", False),
         save_result=event.get("save_result", False),
         return_result=event.get("return_result", False),
     )

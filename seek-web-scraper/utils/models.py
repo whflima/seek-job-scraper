@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Optional
 
 @dataclass
@@ -12,6 +12,7 @@ class Filters:
 @dataclass
 class Data:
     filters: Optional[Filters] = None
+    additional_filters: Optional[list[str]] = None
     save_result: bool = False
     return_result: bool = False
 
@@ -36,6 +37,7 @@ class Job:
     job_id: Optional[int] = None
     advertiser_id: Optional[int] = None
     link: Optional[str] = None
+    description: Optional[str] = field(default=None, repr=False)
 
 @dataclass
 class TechStack:

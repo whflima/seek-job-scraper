@@ -9,10 +9,10 @@ amazon_s3 = AmazonS3Storage()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-def get_seek_jobs(filters: Filters):
+def get_seek_jobs(filters: Filters, additional_filters: list[str]):
     seek = SeekWebScraping()
     seek.set_filters(filters)
-    job_list = seek.get_job()
+    job_list = seek.get_jobs(additional_filters)
     seek.quit()
     return job_list
 
@@ -34,7 +34,7 @@ def handler(event, context):
         data = get_event_data(event)
         amazon_s3.download_file()
         
-        job_list = get_seek_jobs(data.filters)
+        job_list = get_seek_jobs(data.filters, data.additional_filters)
         message = save_result_into_database(data.save_result, job_list)
         
         amazon_s3.close()
@@ -51,6 +51,7 @@ event = {
     "classification": "6281",
     "sort": "sortby-1"
   },
+  "additional_filters": ["part-time", "part time", " intern ", "internship", "sponsorship", "sponsor"],
   "save_result": True,
   "return_result": True
 }

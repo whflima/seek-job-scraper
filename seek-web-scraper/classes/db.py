@@ -1,4 +1,6 @@
+import os
 import sqlite3
+import tempfile
 from utils.schema_sql import (
     query_create_website_provider_table,
     query_create_advertiser_table,
@@ -19,10 +21,12 @@ from utils.schema_sql import (
 from utils.models import Advertiser, Job, JobCard, JobTechStack, TechStack, WebsiteProvider, WebsiteProviderAdvertiser
 from utils.types import Parameters
 
+TEMP_DIR: str = tempfile.gettempdir()
+LOCAL_STORAGE: str = os.path.join(TEMP_DIR, 'web_scraping.db')
 
 class WebScrapingDB:
     
-    def __init__(self, db_path: str = "/tmp/web_scraping.db"):
+    def __init__(self, db_path: str = LOCAL_STORAGE):
         self.connection = sqlite3.connect(db_path)
         self.create_tables()
     
