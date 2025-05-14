@@ -19,6 +19,11 @@ router = APIRouter(
 def get_all(service: StackService = Depends(Provide[Container.stack_service])):
     return service.get_all()
 
+@router.get("/tree")
+@inject
+def get_tree(service: StackService = Depends(Provide[Container.stack_service])):
+    return service.get_tree()
+
 @router.get("/search", response_model=Optional[PaginatedStacksSchema])
 @inject
 def get_advertiser(
