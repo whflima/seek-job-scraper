@@ -1,5 +1,7 @@
+from typing import List
 from pydantic import BaseModel
 
+from app.schema.pagination_schema import PaginationSchema
 
 class StackSchema(BaseModel):
     tech_stack_id: int
@@ -10,3 +12,8 @@ class StackSchema(BaseModel):
     
     class Config:
         orm_mode = True
+        from_attributes = True
+
+class PaginatedStacksSchema(BaseModel):
+    pagination: PaginationSchema
+    items: List[StackSchema]
