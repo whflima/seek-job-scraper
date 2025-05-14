@@ -1,4 +1,5 @@
-from sqlmodel import Field, SQLModel
+from typing import Optional
+from sqlmodel import Field, Relationship, SQLModel
 
 class Job(SQLModel, table=True):
     __tablename__ = "job"
@@ -7,3 +8,5 @@ class Job(SQLModel, table=True):
     title: str = Field(unique=False)
     link: str = Field(unique=False)
     created_at: str = Field(unique=False)
+    
+    advertiser: Optional["Advertiser"] = Relationship(back_populates="jobs")
