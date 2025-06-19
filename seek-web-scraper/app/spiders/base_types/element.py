@@ -19,3 +19,11 @@ class BaseElement:
             except:
                 if attempt == retries - 1:
                     raise Exception(f"Failed to get element: {self.selector}.")
+    
+    def click_element(self):
+        try:
+            element = self.get_element()
+            element.click()
+        except:
+            print("Click intercepted, using JavaScript to click the element.")
+            self.driver.execute_script("arguments[0].click();", element)
