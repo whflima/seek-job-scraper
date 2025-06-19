@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from app.spiders.base_element import BaseElement
+from app.spiders.base_types.element import BaseElement
 
 
 class BaseFilter(BaseElement):

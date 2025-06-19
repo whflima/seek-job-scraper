@@ -1,6 +1,6 @@
 from selenium import webdriver
 from app.constants.enums import Selector
-from app.spiders.search_bar.fields.base_field import BaseFilter
+from app.spiders.base_types.filter import BaseFilter
 
 
 class Classification(BaseFilter):
