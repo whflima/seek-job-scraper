@@ -1,9 +1,9 @@
 from selenium import webdriver
 from app.constants.enums import Selector
-from app.spiders.search_bar.fields.base_field import Base
+from app.spiders.search_bar.fields.base_field import BaseFilter
 
 
-class Classification(Base):
+class Classification(BaseFilter):
     def __init__(self, driver: webdriver, value: str = None):
         self.locator = ""
         self.selector = Selector.CLASSIFICATION
