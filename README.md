@@ -1,4 +1,7 @@
-<h1 align="center">Welcome to Seek Job Scraper App 👋</h1>
+<h1 align="center">
+  <p>Welcome to Seek Job Scraper App 👋</p>
+  <p>(Work in Progress)</p>
+</h1>
 
 > A project to scrape job listings from [Seek.com.au](https://www.seek.com.au) and expose the data via an API. Designed for developers and researchers interested in programmatically accessing job advertisement data for analysis or integration.
 
