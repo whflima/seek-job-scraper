@@ -21,23 +21,23 @@ def save_result_into_database(save_result: bool, job_list: list):
     if not (save_result and job_list):
         return "No jobs found." if not job_list else "Jobs processed successfully, but not saved."
     
+    amazon_s3.download_file()
     database = WebScrapingDB()
     database.save_all_jobs(job_list)
     database.close()
     
     amazon_s3.upload_file()
+    amazon_s3.close()
 
     return message
         
 def handler(event, context):
     try:
         data = get_event_data(event)
-        amazon_s3.download_file()
         
         job_list = get_seek_jobs(data.filters, data.additional_filters)
         message = save_result_into_database(data.save_result, job_list)
         
-        amazon_s3.close()
         return get_response(200, {"message": message, "jobs": job_list}) 
     except Exception as e:
         logger.exception("Error processing Lambda event")
@@ -45,14 +45,14 @@ def handler(event, context):
     
 event = {
   "filters": {
-    "keywords": "Software Engineer",
+    "keywords": "Software Engineer or developer",
     "location": "All Sydney NSW",
-    "time": "Today",
+    "time": "Last 3 days",
     "classification": "6281",
     "sort": "sortby-1"
   },
   "additional_filters": ["part-time", "part time", " intern ", "internship", "sponsorship", "sponsor"],
-  "save_result": True,
+  "save_result": False,
   "return_result": True
 }
 

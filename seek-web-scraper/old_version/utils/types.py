@@ -51,3 +51,39 @@ tech_stack_patterns = {
         "tools": r"\b(Jira|Confluence|Slack|Microsoft Teams|Trello|Asana|ClickUp|Notion|Miro|Basecamp)\b"
     }
 }
+
+it_job_patterns = {
+    "software_development": {
+        "titles": r"\b(Software Developer|Software Engineer|Full Stack Developer|Frontend Developer|Backend Developer|Mobile Developer|Embedded Systems Engineer|Application Developer|Game Developer|Web Developer|Tech Lead|Solutions Architect|Software Architect)\b"
+    },
+    "data": {
+        "titles": r"\b(Data Analyst|Data Scientist|Machine Learning Engineer|Data Engineer|BI Developer|Statistician|Data Architect|AI Engineer|Business Intelligence Analyst|Big Data Engineer|Quantitative Analyst|Research Data Scientist|Analytics Engineer|NLP Engineer)\b"
+    },
+    "cybersecurity": {
+        "titles": r"\b(Security Analyst|Security Engineer|Penetration Tester|Ethical Hacker|SOC Analyst|Information Security Manager|CISO|Security Consultant|Incident Responder|Threat Analyst|Forensics Analyst|Application Security Engineer|Cybersecurity Architect|Vulnerability Analyst|IAM Specialist)\b"
+    },
+    "cloud_and_devops": {
+        "titles": r"\b(DevOps Engineer|Site Reliability Engineer|Cloud Engineer|Platform Engineer|Infrastructure Engineer|Release Engineer|Cloud Solutions Architect|Cloud Consultant|Cloud Administrator|DevOps Architect|CI/CD Engineer|Automation Engineer|SRE)\b"
+    },
+    "networking": {
+        "titles": r"\b(Network Engineer|Network Administrator|Systems Engineer|Telecom Engineer|Network Architect|Wireless Engineer|VoIP Engineer|Infrastructure Architect|NOC Engineer|Network Security Engineer)\b"
+    },
+    "it_support_and_admin": {
+        "titles": r"\b(IT Support Specialist|System Administrator|Help Desk Technician|Desktop Support|IT Technician|Technical Support Analyst|IT Administrator|Service Desk Analyst|Field Service Technician|End-User Support Specialist|IT Operations Analyst|IT Coordinator)\b"
+    },
+    "project_and_product": {
+        "titles": r"\b(IT Project Manager|Product Manager|Scrum Master|Program Manager|Agile Coach|Technical Program Manager|Product Owner|Delivery Manager|IT Portfolio Manager|Business Analyst|IT Business Partner)\b"
+    },
+    "qa_and_testing": {
+        "titles": r"\b(QA Engineer|QA Analyst|Test Engineer|Automation Engineer|Software Tester|SDET|Performance Tester|Quality Engineer|Test Automation Architect|Manual Tester|Regression Tester|Load Tester|QA Lead)\b"
+    },
+    "ui_ux_and_design": {
+        "titles": r"\b(UX Designer|UI Designer|Product Designer|Interaction Designer|Visual Designer|UX Researcher|UX/UI Developer|Design Lead|Information Architect|User Researcher|Motion Designer|Accessibility Specialist)\b"
+    },
+    "database": {
+        "titles": r"\b(Database Administrator|DBA|Data Architect|Database Engineer|Database Analyst|SQL Developer|Data Warehouse Engineer|ETL Developer|Database Reliability Engineer)\b"
+    },
+    "ai_and_research": {
+        "titles": r"\b(AI Engineer|NLP Engineer|Computer Vision Engineer|AI Researcher|Research Scientist|Deep Learning Engineer|Reinforcement Learning Engineer|AI Product Manager|Cognitive Computing Specialist|ML Ops Engineer|Conversational AI Engineer)\b"
+    }
+}
