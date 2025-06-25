@@ -1,4 +1,7 @@
-<h1 align="center">Welcome to API Web Scraper 👋</h1>
+<h1 align="center">
+  <p>Welcome to API Web Scraper 👋</p>
+  <p>(Work in Progress)</p>
+</h1>
 
 > This directory contains the FastAPI backend for serving scraped job data via a RESTful API.
 
